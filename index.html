@@ -649,7 +649,7 @@ function highlightText(text){
     out += esc(text.slice(last, m.index));
     if (m[1]) out += `<span class="comment">${esc(m[1])}</span>`;
     else if (m[2]) out += `<span class="str">${esc(m[2])}</span>`;
-    else if (m[3]) out += `<span class="kw">m[3]</span>{m[4]}<span class="func">${esc(m[5])}</span>`;
+    else if (m[3]) out += `<span class="kw">${m[3]}</span>${m[4]}<span class="func">${esc(m[5])}</span>`;
     else if (m[6]) out += `<span class="self-word">self</span>`;
     else if (m[7]) out += `<span class="bi">${m[7]}</span>`;
     else if (m[8]) out += `<span class="kw">${m[8]}</span>`;
@@ -689,7 +689,7 @@ function markDone(id){
   if (doneTasks.has(id)) return;
   doneTasks.add(id);
   $('progress-fill').style.width = (doneTasks.size / TASKS.length * 100) + '%';
-  ('progress-text').textContent=`{doneTasks.size}/${TASKS.length} misiuni`;
+  $('progress-text').textContent = `${doneTasks.size}/${TASKS.length} misiuni`;
   const tabOf = {c1:'cap1',c2:'cap2',blanks:'cap2',c3:'cap3',puzzle:'cap4',code:'cap5'}[id];
   const need = {cap1:['c1'],cap2:['c2','blanks'],cap3:['c3'],cap4:['puzzle'],cap5:['code']}[tabOf];
   if (need.every(n => doneTasks.has(n))) document.querySelector(`#tabs .tab[data-ch="${tabOf}"]`).classList.add('done');
@@ -840,7 +840,7 @@ function hintBlanks(){
 let witchCandies = 0, witchMana = 10;
 function updateWitchUI(msg){
   $('stat-candies-text').textContent = witchCandies;
-  ('stat-mana-text').textContent=`{witchMana} / 10`;
+  $('stat-mana-text').textContent = `${witchMana} / 10`;
   $('candy-bar').style.width = Math.min(witchCandies/20*100,100) + '%';
   $('mana-bar').style.width = (witchMana/10*100) + '%';
   $('witch-log').textContent = msg;
@@ -881,13 +881,13 @@ function buyUpgrade(i){
   if (candies >= cost){
     candies -= cost; candyPerSec += upgGain[i-1]; playSound('success');
     upgPrices[i-1] = Math.round(cost*1.4);
-    (`upg{i}-cost`).textContent = `Cost: ${upgPrices[i-1]} 🍬`;
+    $(`upg${i}-cost`).textContent = `Cost: ${upgPrices[i-1]} 🍬`;
     updateClickerUI();
   } else playSound('spooky');
 }
 function updateClickerUI(){
   $('candy-score').textContent = candies;
-  [1,2,3].forEach(i => (`upg{i}`).classList.toggle('disabled', candies < upgPrices[i-1]));
+  [1,2,3].forEach(i => $(`upg${i}`).classList.toggle('disabled', candies < upgPrices[i-1]));
 }
 setInterval(() => { if (candyPerSec > 0){ candies += candyPerSec; updateClickerUI(); } }, 1000);
 
@@ -1201,7 +1201,7 @@ CHAPTERS.forEach((id, i) => {
   bar.dataset.for = id;
   bar.innerHTML =
     (prev ? `<button class="btn-hint" data-go="${prev}">← ${CH_NAMES[prev]}</button>` : '<span></span>') +
-    (next ? `<button class="btn-spooky-check" data-go="next">{CH_NAMES[next]} →</button>` : '<span></span>');
+    (next ? `<button class="btn-spooky-check" data-go="${next}">${CH_NAMES[next]} →</button>` : '<span></span>');
   $(id).after(bar);
   bar.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b){ showChapter(b.dataset.go); playSound('pop'); } });
 });
@@ -1219,5 +1219,3 @@ function celebrate(silent){
 </script>
 </body>
 </html>
-
-
