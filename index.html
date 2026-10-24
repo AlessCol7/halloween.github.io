@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎃 Conacul Bântuit OOP Python - Ediție Halloween 👻</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@400;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-dark:#0a0512; --card-bg:#150a24; --card-border:#441768;
+  --orange:#ff7518; --purple:#a855f7; --green:#39ff14; --pink:#ff2a85; --yellow:#ffdd53;
+  --text:#f3e8ff; --muted:#bda7d6; --code-bg:#090310; --code-border:#632c8d; --term-bg:#05020a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{
+  background-color:var(--bg-dark);color:var(--text);font-family:'Fredoka',sans-serif;line-height:1.6;overflow-x:hidden;
+  background-image:
+    radial-gradient(circle at 15% 15%,rgba(168,85,247,.18) 0%,transparent 40%),
+    radial-gradient(circle at 85% 30%,rgba(255,117,24,.16) 0%,transparent 45%),
+    radial-gradient(circle at 50% 85%,rgba(57,255,20,.1) 0%,transparent 50%),
+    linear-gradient(to bottom,#090310 0%,#110521 50%,#08020d 100%);
+  background-attachment:fixed;
+}
+code{font-family:'Fira Code',monospace;background:rgba(168,85,247,.15);padding:1px 6px;border-radius:6px;font-size:.92em;color:#e9d5ff}
+#halloween-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+
+/* ---------- Bara de navigare + progres ---------- */
+.topnav{
+  position:sticky;top:0;z-index:20;background:rgba(10,5,18,.88);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--card-border);padding:8px 16px;
+  display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;
+}
+.topnav .tab{
+  flex:0 0 auto;background:transparent;border:1px solid transparent;color:var(--muted);font-family:'Fredoka',sans-serif;
+  font-size:.92rem;padding:6px 12px;border-radius:14px;cursor:pointer;white-space:nowrap;transition:.2s
+}
+.topnav .tab:hover{background:#2b134d;color:var(--orange)}
+.topnav .tab.active{background:linear-gradient(135deg,var(--orange),#d14d00);color:#fff;font-weight:600;box-shadow:0 0 10px rgba(255,117,24,.5)}
+.topnav .tab.done::after{content:" ✓";color:var(--green)}
+.topnav .progress-wrap{flex:0 0 auto;margin-left:auto;padding-left:10px}
+.chapter{display:none}
+body:not(.at-intro) .moon-badge,body:not(.at-intro) .subtitle,body:not(.at-intro) .mascots,body:not(.at-intro) header::before,body:not(.at-intro) header::after{display:none}
+body:not(.at-intro) header{padding:12px 20px;margin-bottom:24px}
+body:not(.at-intro) h1.halloween-title{font-size:clamp(1.5rem,4vw,2.2rem);margin-bottom:0}
+.chapter.active{display:block;animation:chIn .35s ease}
+@keyframes chIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pager{display:none;justify-content:space-between;gap:12px;margin:-20px 0 40px}
+.pager.show{display:flex}
+.progress-wrap{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--yellow)}
+.progress{width:140px;height:10px;background:#0a0314;border:1px solid #4a1975;border-radius:8px;overflow:hidden}
+#progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--orange),var(--green));transition:width .5s ease}
+
+.container{max-width:1060px;margin:0 auto;padding:30px 20px 80px;position:relative;z-index:2}
+
+/* ---------- Antet ---------- */
+header{
+  text-align:center;padding:40px 20px;background:rgba(21,10,36,.7);backdrop-filter:blur(8px);
+  border:2px solid var(--card-border);border-radius:28px;margin-bottom:40px;position:relative;overflow:hidden;
+  box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 25px rgba(168,85,247,.25);
+}
+header::before{content:"🕸️";position:absolute;top:15px;left:20px;font-size:2.2rem;opacity:.7}
+header::after{content:"🕷️";position:absolute;bottom:15px;right:25px;font-size:2.2rem;animation:swing 3s ease-in-out infinite alternate}
+@keyframes swing{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(12px) rotate(15deg)}}
+.moon-badge{
+  display:inline-block;width:75px;height:75px;line-height:75px;font-size:2.2rem;text-align:center;border-radius:50%;margin-bottom:10px;
+  background:radial-gradient(circle at 35% 35%,#fff9d2,var(--yellow) 60%,#e6a817 100%);
+  box-shadow:0 0 35px var(--yellow),0 0 70px rgba(255,221,83,.4);animation:moon 4s ease-in-out infinite alternate;
+}
+@keyframes moon{0%{transform:translateY(0) rotate(-3deg)}100%{transform:translateY(-10px) rotate(3deg)}}
+h1.halloween-title{
+  font-family:'Creepster',cursive;font-size:clamp(2.4rem,6vw,4rem);letter-spacing:2px;color:var(--orange);margin-bottom:12px;
+  text-shadow:0 0 10px rgba(255,117,24,.8),0 0 25px rgba(255,117,24,.4),3px 3px 0 #000;
+}
+.subtitle{font-size:1.25rem;color:var(--muted);max-width:720px;margin:0 auto 15px}
+.mascots{display:flex;justify-content:center;gap:16px;margin-top:15px;flex-wrap:wrap}
+.mascot-tag{background:rgba(36,12,60,.8);border:1px solid var(--purple);padding:8px 18px;border-radius:30px;font-size:.95rem;color:#ffd27d;box-shadow:0 0 12px rgba(168,85,247,.3)}
+
+/* ---------- Carduri ---------- */
+.spooky-card{
+  background:var(--card-bg);border:2px solid var(--card-border);border-radius:24px;padding:30px;margin-bottom:45px;
+  box-shadow:0 15px 35px rgba(0,0,0,.7),0 0 15px rgba(168,85,247,.15);transition:.3s;
+}
+.spooky-card:hover{border-color:var(--orange);box-shadow:0 15px 40px rgba(0,0,0,.8),0 0 25px rgba(255,117,24,.3)}
+.chapter-badge{
+  display:inline-block;background:linear-gradient(135deg,var(--orange),#d14d00);color:#fff;font-weight:700;text-transform:uppercase;
+  font-size:.85rem;letter-spacing:1px;padding:5px 14px;border-radius:20px;margin-bottom:12px;box-shadow:0 0 10px rgba(255,117,24,.5)
+}
+.card-title{font-family:'Creepster',cursive;font-size:2.2rem;letter-spacing:1.5px;color:var(--orange);margin-bottom:15px;text-shadow:2px 2px 0 #000;line-height:1.2}
+.card-intro{font-size:1.12rem;margin-bottom:25px}
+
+/* ---------- Pasi didactici ---------- */
+.step-box{background:rgba(14,5,26,.9);border:1px solid rgba(168,85,247,.2);border-left:5px solid var(--purple);border-radius:12px;padding:20px;margin-bottom:25px}
+.step-box.green{border-left-color:var(--green);border-color:rgba(57,255,20,.2)}
+.step-box.orange{border-left-color:var(--orange);border-color:rgba(255,117,24,.2)}
+.step-header{font-weight:700;font-size:1.15rem;margin-bottom:10px}
+.step-header.purple{color:#d8b4fe}.step-header.green{color:var(--green)}.step-header.orange{color:var(--orange)}
+
+/* ---------- COD PYTHON: indentare pastrata, numere de linie, ghidaje ---------- */
+.python-code{
+  background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;padding:16px 18px;margin:15px 0;
+  font-family:'Fira Code',monospace;font-size:.95rem;line-height:1.7;color:#f1f5f9;
+  white-space:pre;tab-size:4;overflow-x:auto;box-shadow:inset 0 2px 8px rgba(0,0,0,.8);
+  counter-reset:ln;
+}
+.python-code .line{display:block;min-height:1.7em;counter-increment:ln}
+.python-code .line::before{content:counter(ln);display:inline-block;width:2ch;margin-right:16px;text-align:right;color:#5b4a78;user-select:none}
+.python-code.no-lines .line::before{display:none}
+.guide{display:inline-block;white-space:pre;box-shadow:inset 1px 0 0 rgba(168,85,247,.38)}
+.kw{color:#f43f5e;font-weight:600}.func{color:#38bdf8;font-weight:600}.call{color:#7dd3fc}
+.bi{color:#c084fc}.self-word{color:#fb923c;font-style:italic}.str{color:#4ade80}
+.comment{color:#818cf8;font-style:italic}.num{color:#facc15}
+.qmark{border-bottom:2px dashed var(--purple);padding:0 6px;color:var(--yellow)}
+.fill-code{line-height:2.3}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.legend span{font-size:.9rem;background:#1e0d36;border:1px solid #5a1e8a;border-radius:10px;padding:4px 12px}
+
+/* ---------- Arbore mostenire ---------- */
+.tree{display:flex;flex-direction:column;align-items:center;gap:0;margin:20px 0}
+.tree-node{background:#1e0d36;border:2px solid var(--purple);border-radius:14px;padding:8px 18px;font-family:'Fira Code',monospace;font-size:.9rem;text-align:center}
+.tree-node.root{border-color:var(--orange);color:#ffd27d}
+.tree-line{width:2px;height:18px;background:var(--purple)}
+.tree-bar{height:2px;background:var(--purple);width:min(560px,80%)}
+.tree-children{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.tree-children .tree-node::before{content:"";}
+
+/* ---------- Quiz ---------- */
+.quiz-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:15px 0}
+.quiz-btn{
+  background:#1e0d36;border:2px solid #5a1e8a;border-radius:14px;padding:12px 18px;color:var(--text);font-family:'Fredoka',sans-serif;
+  font-size:1.05rem;cursor:pointer;text-align:left;transition:.2s
+}
+.quiz-btn:hover{background:#2b134d;border-color:var(--purple);transform:translateY(-2px);box-shadow:0 4px 15px rgba(168,85,247,.4)}
+.quiz-btn.correct{background:#0f3d1b!important;border-color:var(--green)!important;color:#afffa4!important;box-shadow:0 0 15px var(--green)}
+.quiz-btn.wrong{background:#470e1b!important;border-color:#ff3355!important;color:#ffb4c2!important;animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.feedback-msg{margin-top:10px;padding:12px 16px;border-radius:10px;display:none}
+.feedback-msg.show{display:block}
+.feedback-msg.success{background:rgba(15,61,27,.8);border:1px solid var(--green);color:#bbf7d0}
+.feedback-msg.error{background:rgba(71,14,27,.8);border:1px solid #ff3355;color:#fecdd3}
+
+/* ---------- Teatru polimorfism ---------- */
+.monster-stage{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin:20px 0}
+.monster-card{background:#1e0d36;border:2px solid var(--card-border);border-radius:18px;padding:20px;text-align:center;transition:.3s}
+.monster-card:hover{transform:translateY(-5px);border-color:var(--orange);box-shadow:0 8px 25px rgba(255,117,24,.25)}
+.monster-avatar{font-size:3.5rem;display:inline-block;animation:idle 3s ease-in-out infinite alternate}
+@keyframes idle{0%{transform:scale(1)}100%{transform:scale(1.1) rotate(4deg)}}
+.action-spooky-btn{
+  background:linear-gradient(135deg,#7928ca,#ff0080);border:none;border-radius:20px;color:#fff;font-family:'Fredoka',sans-serif;
+  font-weight:600;font-size:1rem;padding:10px 18px;cursor:pointer;margin-top:12px;box-shadow:0 4px 15px rgba(255,0,128,.35);transition:.2s
+}
+.action-spooky-btn:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(255,0,128,.5)}
+.action-spooky-btn:active{transform:scale(.96)}
+.bubble-output{min-height:48px;margin-top:12px;background:rgba(0,0,0,.5);border:1px dashed var(--purple);border-radius:12px;padding:8px 12px;font-size:.92rem;color:#fce7f3;display:flex;align-items:center;justify-content:center}
+
+/* ---------- Completeaza spatiile ---------- */
+.blank-input{
+  background:#250d40;border:2px solid #9333ea;color:var(--green);font-family:'Fira Code',monospace;font-weight:700;font-size:.95rem;
+  padding:2px 10px;border-radius:8px;outline:none;transition:.2s;text-align:center
+}
+.blank-input:focus{border-color:var(--green);box-shadow:0 0 12px var(--green);background:#18052e}
+.blank-input.valid{border-color:var(--green);background:#0f3d1b}
+.blank-input.invalid{border-color:#ff3355;background:#4a0c1a;color:#ffb4c2}
+.btn-row{display:flex;gap:12px;margin-top:15px;flex-wrap:wrap}
+.btn-spooky-check{
+  background:linear-gradient(135deg,var(--green),#16a34a);color:#052e16;border:none;font-family:'Fredoka',sans-serif;font-weight:700;
+  font-size:1.05rem;padding:10px 22px;border-radius:20px;cursor:pointer;box-shadow:0 4px 15px rgba(57,255,20,.4);transition:.2s
+}
+.btn-spooky-check:hover{transform:scale(1.05);box-shadow:0 6px 22px rgba(57,255,20,.6)}
+.btn-hint{background:#30174e;color:#e9d5ff;border:1px solid var(--purple);font-family:'Fredoka',sans-serif;font-weight:600;padding:10px 18px;border-radius:20px;cursor:pointer;transition:.2s}
+.btn-hint:hover{background:#421e6e}
+
+/* ---------- Simulator stare ---------- */
+.witch-hud{background:linear-gradient(145deg,#200d3d,#140526);border:2px solid var(--purple);border-radius:20px;padding:24px;margin:20px 0;display:flex;flex-wrap:wrap;gap:25px;align-items:flex-start;justify-content:space-around;box-shadow:0 0 25px rgba(168,85,247,.2)}
+.witch-avatar-col{text-align:center;min-width:220px;flex:1}
+.witch-avatar-big{font-size:4.5rem;filter:drop-shadow(0 0 15px var(--pink))}
+.witch-bars-col{flex:2;min-width:260px}
+.stat-row{margin-bottom:15px}
+.stat-label{display:flex;justify-content:space-between;font-weight:600;margin-bottom:5px}
+.stat-track{height:18px;background:#0a0314;border-radius:12px;overflow:hidden;border:1px solid #4a1975}
+.stat-fill-candy{height:100%;background:linear-gradient(90deg,#ff7518,#ffaa00);border-radius:12px;transition:width .4s;box-shadow:0 0 10px #ff7518}
+.stat-fill-mana{height:100%;background:linear-gradient(90deg,#a855f7,#38bdf8);border-radius:12px;transition:width .4s;box-shadow:0 0 10px #a855f7}
+.witch-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+
+/* ---------- Clicker ---------- */
+.clicker-box{text-align:center;background:radial-gradient(circle,#290e47 0%,#110521 80%);border:2px dashed var(--orange);border-radius:24px;padding:30px 20px;margin:25px 0}
+.giant-cauldron{font-size:5.5rem;cursor:pointer;display:inline-block;user-select:none;transition:transform .1s;filter:drop-shadow(0 0 20px rgba(255,117,24,.4))}
+.giant-cauldron:hover{transform:scale(1.1) rotate(-5deg)}.giant-cauldron:active{transform:scale(.92) rotate(5deg)}
+.score-candy{font-family:'Creepster',cursive;font-size:2.5rem;color:var(--yellow);margin:15px 0 5px;text-shadow:0 0 15px rgba(255,221,83,.6)}
+.store-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:25px}
+.store-item{background:#1e0d36;border:1px solid var(--purple);border-radius:16px;padding:14px;text-align:center;cursor:pointer;transition:.2s}
+.store-item:hover{background:#311459;border-color:var(--green);transform:translateY(-3px)}
+.store-item.disabled{opacity:.5;cursor:not-allowed;border-color:#555}
+
+/* ---------- Puzzle cod cu ordine + indentare ---------- */
+.reorder-list{display:flex;flex-direction:column;gap:8px;margin:20px 0}
+.code-line-card{
+  background:#130624;border:1px solid #6b21a8;border-radius:10px;padding:8px 14px;font-family:'Fira Code',monospace;font-size:.92rem;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:0 3px 10px rgba(0,0,0,.5);transition:.2s
+}
+.code-line-card:hover{border-color:var(--orange);background:#1f0b38}
+.code-line-card.bad{border-color:#ff3355;background:#2a0a14}
+.code-line-card.good{border-color:var(--green)}
+.code-text{white-space:pre;overflow-x:auto;flex:1}
+.order-btns{display:flex;gap:6px;flex-shrink:0}
+.arrow-btn{background:#3b1764;border:none;color:#fff;min-width:30px;height:30px;border-radius:6px;cursor:pointer;font-weight:700;font-family:'Fira Code',monospace}
+.arrow-btn:hover{background:var(--purple)}
+.arrow-btn.indent{background:#1f4d6b}.arrow-btn.indent:hover{background:#38bdf8;color:#04121c}
+.puzzle-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem;color:var(--muted)}
+
+/* ---------- IDE ---------- */
+.ide-container{background:var(--code-bg);border:2px solid var(--purple);border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.8),0 0 20px rgba(168,85,247,.25);margin-top:25px}
+.ide-topbar{background:#1a0830;padding:8px 16px 0;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--code-border);flex-wrap:wrap;gap:6px}
+.ide-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab-btn{background:#0d0417;border:1px solid #481a70;border-bottom:none;color:#c084fc;padding:6px 14px;border-radius:8px 8px 0 0;font-size:.85rem;font-family:'Fira Code',monospace;cursor:pointer}
+.tab-btn.active{background:#250d40;color:var(--orange);font-weight:600}
+.editor-wrap{display:flex;background:#090312;height:360px}
+#gutter{
+  margin:0;padding:14px 10px 14px 14px;min-width:48px;text-align:right;color:#5b4a78;background:#0d0418;border-right:1px solid #2a1245;
+  font-family:'Fira Code',monospace;font-size:15px;line-height:24px;overflow:hidden;user-select:none;white-space:pre
+}
+#python-editor{
+  flex:1;background:transparent;color:#a7f3d0;font-family:'Fira Code',monospace;font-size:15px;line-height:24px;padding:14px 16px;
+  border:none;outline:none;resize:none;white-space:pre;overflow:auto;tab-size:4;
+}
+.ide-status{display:flex;justify-content:space-between;padding:4px 16px;background:#12051f;color:#8b7aa8;font-family:'Fira Code',monospace;font-size:.8rem;border-top:1px solid #2a1245}
+.ide-controls{background:#140526;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--code-border);flex-wrap:wrap;gap:10px}
+.btn-run-code{background:linear-gradient(135deg,var(--green),#15803d);color:#022c22;font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.1rem;padding:10px 24px;border-radius:14px;border:none;cursor:pointer;box-shadow:0 0 15px rgba(57,255,20,.4);transition:.2s}
+.btn-run-code:hover{transform:scale(1.05);box-shadow:0 0 25px rgba(57,255,20,.6)}
+.btn-run-code:disabled{opacity:.6;cursor:wait;transform:none}
+.terminal-window{background:var(--term-bg);padding:14px 16px;min-height:140px;max-height:240px;overflow-y:auto;font-family:'Fira Code',monospace;font-size:.92rem;color:#38bdf8;border-top:1px solid #3b1764}
+.term-line{margin-bottom:3px;line-height:1.45;white-space:pre-wrap}
+.term-out{color:#f1f5f9}.term-success{color:var(--green)}.term-err{color:#ff6b86}.term-hint{color:var(--yellow)}
+
+/* ---------- Diploma + toast ---------- */
+.diploma-card{background:radial-gradient(circle,#220b3b 0%,#0c0217 100%);border:4px solid var(--orange);border-radius:28px;padding:40px 25px;text-align:center;box-shadow:0 0 40px rgba(255,117,24,.4);margin-top:40px}
+.diploma-title{font-family:'Creepster',cursive;font-size:2.8rem;color:var(--yellow);margin-bottom:15px;text-shadow:0 0 15px rgba(255,221,83,.7);line-height:1.2}
+.diploma-input-name{background:#18052e;border:2px solid var(--purple);border-radius:12px;padding:10px 20px;color:var(--yellow);font-size:1.4rem;font-family:'Fredoka',sans-serif;font-weight:700;text-align:center;margin:15px auto;display:block;max-width:380px;outline:none}
+.diploma-input-name:focus{border-color:var(--orange);box-shadow:0 0 20px var(--orange)}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e0d36;border:2px solid var(--orange);color:var(--text);padding:12px 22px;border-radius:16px;z-index:50;transition:transform .35s;box-shadow:0 8px 30px rgba(0,0,0,.7);max-width:90vw;text-align:center}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+@media print{
+  body *{visibility:hidden}
+  .diploma-card,.diploma-card *{visibility:visible}
+  .diploma-card{position:absolute;left:0;top:0;width:100%;border-color:#000;color:#000;background:#fff}
+}
+@media (max-width:768px){.card-title{font-size:1.8rem}.spooky-card{padding:20px}.editor-wrap{height:300px}}
+</style>
+</head>
+<body>
+
+<canvas id="halloween-canvas"></canvas>
+
+<nav class="topnav" id="tabs">
+  <button class="tab" data-ch="intro">🗺️ Hartă</button>
+  <button class="tab" data-ch="cap1">1 · Moștenire</button>
+  <button class="tab" data-ch="cap2">2 · Polimorfism</button>
+  <button class="tab" data-ch="cap3">3 · Încapsulare</button>
+  <button class="tab" data-ch="pauza">🍭 Pauză</button>
+  <button class="tab" data-ch="cap4">4 · Puzzle</button>
+  <button class="tab" data-ch="cap5">5 · Atelier</button>
+  <button class="tab" data-ch="diploma">📜 Diplomă</button>
+  <div class="progress-wrap">
+    <div class="progress"><div id="progress-fill"></div></div>
+    <span id="progress-text">0/6 misiuni</span>
+  </div>
+</nav>
+
+<div class="container">
+
+  <header>
+    <div class="moon-badge">🌕</div>
+    <h1 class="halloween-title">Conacul Bântuit al Codului Python</h1>
+    <p class="subtitle">Lecția Magică de Halloween: Recapitulare Moștenire, Polimorfism și Încapsulare cu Monștri Haioși</p>
+    <div class="mascots">
+      <div class="mascot-tag">🧙‍♂️ <strong>Stitch:</strong> Maestru Vânător de Dovleci</div>
+      <div class="mascot-tag">🔮 <strong>Angel:</strong> Vrăjitoarea Poțiunilor Roz</div>
+      <div class="mascot-tag">🍬 Durată: <strong>2 ore interactive</strong></div>
+    </div>
+  </header>
+
+  <!-- ===== HARTA: anatomia unei clase + regula indentarii ===== -->
+  <section class="spooky-card chapter" id="intro">
+    <span class="chapter-badge">Harta Conacului • Înainte să începem</span>
+    <h2 class="card-title">🗺️ Anatomia unui Cod Python</h2>
+    <p class="card-intro">
+      În Python, <strong>indentarea (spațiile de la începutul liniei) face parte din cod</strong>. Ea spune cine aparține cui:
+      după fiecare linie care se termină cu <code>:</code> urmează un bloc împins la dreapta cu <strong>4 spații</strong>.
+      Liniile verticale mov din blocurile de cod îți arată fiecare nivel.
+    </p>
+
+<pre class="python-code" data-code>
+class Vrajitoare:                                  # nivel 0: clasa
+    def __init__(self, nume):                      # nivel 1: o metodă a clasei
+        self.nume = nume                           # nivel 2: corpul metodei
+
+    def spune_salut(self):                         # nivel 1: altă metodă
+        if self.nume:                              # nivel 2
+            print(f"Salut, sunt {self.nume}!")     # nivel 3: corpul lui if
+</pre>
+
+    <div class="legend">
+      <span>📦 <strong>nivel 0</strong>: <code>class</code></span>
+      <span>🔧 <strong>nivel 1</strong>: metodele (<code>def</code>)</span>
+      <span>⚙️ <strong>nivel 2+</strong>: corpul metodei, <code>if</code>, <code>for</code></span>
+      <span>⌨️ <strong>1 nivel = 4 spații</strong> (tasta Tab în editor)</span>
+    </div>
+  </section>
+
+  <!-- ===== CAPITOLUL 1 ===== -->
+  <section class="spooky-card chapter" id="cap1">
+    <span class="chapter-badge">Capitolul 1 • Încălzirea Baghetelor</span>
+    <h2 class="card-title">🕯️ Recapitulare: Clase, Constructor și Moștenire</h2>
+    <p class="card-intro">
+      Să ne amintim cum transmitem superputerile de la clasa părinte la clasa copil! Fiecare clasă are un rucsac magic numit <code>self</code>,
+      iar copilul folosește <code>super()</code> ca să nu rescrie codul de la început.
+    </p>
+
+    <div class="step-box purple">
+      <div class="step-header purple">🧠 Ghicitoare rapidă de cod</div>
+      <p>Ce lipsește (<code>???</code>) pentru ca Fantomița să preia numele și culoarea de la Creatura de bază?</p>
+
+<pre class="python-code" data-code>
+class Creatura:
+    def __init__(self, nume, culoare):
+        self.nume = nume
+        self.culoare = culoare
+
+class Fantomita(Creatura):
+    def __init__(self, nume, culoare, transparenta):
+        # Cum chemăm constructorul părintelui Creatura? 🎃
+        ???.__init__(nume, culoare)
+        self.transparenta = transparenta
+</pre>
+
+      <div class="quiz-options" id="quiz-cap1">
+        <button class="quiz-btn" data-ok="0">A) <code>Creatura.copiaza()</code></button>
+        <button class="quiz-btn" data-ok="1">B) <code>super()</code></button>
+        <button class="quiz-btn" data-ok="0">C) <code>self.parinte()</code></button>
+        <button class="quiz-btn" data-ok="0">D) <code>magic()</code></button>
+      </div>
+      <div class="feedback-msg" id="fb-quiz-cap1"></div>
+    </div>
+  </section>
+
+  <!-- ===== CAPITOLUL 2 ===== -->
+  <section class="spooky-card chapter" id="cap2">
+    <span class="chapter-badge">Capitolul 2 • Marea Transformare</span>
+    <h2 class="card-title">🦇 Polimorfism: același nume, vrăji diferite!</h2>
+    <p class="card-intro">
+      <strong>Polimorfismul</strong> înseamnă că mai multe clase au o metodă cu <em>exact același nume</em> (aici <code>sperie()</code>),
+      dar fiecare o execută în felul ei. Rescrierea unei metode moștenite se numește <strong>method overriding</strong>.
+    </p>
+
+    <div class="tree">
+      <div class="tree-node root">MonstruHalloween<br><small>sperie()</small></div>
+      <div class="tree-line"></div>
+      <div class="tree-bar"></div>
+      <div class="tree-children">
+        <div><div class="tree-line" style="margin:0 auto"></div><div class="tree-node">DovleacVesel<br><small>sperie() 🎃</small></div></div>
+        <div><div class="tree-line" style="margin:0 auto"></div><div class="tree-node">FantomaSclipitoare<br><small>sperie() 👻</small></div></div>
+        <div><div class="tree-line" style="margin:0 auto"></div><div class="tree-node">PisicaMagica<br><small>sperie() 🐱</small></div></div>
+      </div>
+    </div>
+
+    <div class="step-box purple">
+      <div class="step-header purple">👀 Pasul 1: Vezi și înțelege codul</div>
+      <p>Observă cum fiecare clasă copil rescrie <code>sperie(self)</code> la același nivel de indentare ca în părinte:</p>
+
+<pre class="python-code" data-code>
+class MonstruHalloween:
+    def __init__(self, nume):
+        self.nume = nume
+
+    def sperie(self):
+        print("Un sunet misterios se aude în conac...")
+
+class DovleacVesel(MonstruHalloween):
+    def sperie(self):
+        print(f"{self.nume} luminează ochii portocalii: Booo-ha-ha! 🎃")
+
+class FantomaSclipitoare(MonstruHalloween):
+    def sperie(self):
+        print(f"{self.nume} trece prin ușă aruncând sclipici: Uuuuu roz! 👻✨")
+</pre>
+    </div>
+
+    <div class="step-box orange">
+      <div class="step-header orange">🔮 Pasul 2: Test de clarviziune, ce va afișa?</div>
+<pre class="python-code" data-code>
+dovlecel = DovleacVesel("Dovi")
+dovlecel.sperie()
+</pre>
+      <div class="quiz-options" id="quiz-cap2">
+        <button class="quiz-btn" data-ok="0">A) "Un sunet misterios se aude în conac..."</button>
+        <button class="quiz-btn" data-ok="1">B) "Dovi luminează ochii portocalii: Booo-ha-ha! 🎃"</button>
+        <button class="quiz-btn" data-ok="0">C) Eroare: Dovleacul nu știe să vorbească!</button>
+      </div>
+      <div class="feedback-msg" id="fb-quiz-cap2"></div>
+    </div>
+
+    <div class="step-box green">
+      <div class="step-header green">🎭 Teatrul Polimorfismului: apasă și ascultă!</div>
+      <p>Toți trei răspund la aceeași comandă <code>creatura.sperie()</code>. Pisoiul Umbră este exact clasa pe care o completezi mai jos!</p>
+      <div class="monster-stage">
+        <div class="monster-card">
+          <div class="monster-avatar">🎃</div>
+          <h3>Dovlecelul Dovi</h3>
+          <p style="font-size:.9rem;color:#cbd5e1">Clasa <code>DovleacVesel</code></p>
+          <button class="action-spooky-btn" onclick="triggerMonster('pumpkin')">Apelează .sperie()</button>
+          <div class="bubble-output" id="out-pumpkin">...așteaptă vraja...</div>
+        </div>
+        <div class="monster-card">
+          <div class="monster-avatar">👻</div>
+          <h3>Fantomița Bibi</h3>
+          <p style="font-size:.9rem;color:#cbd5e1">Clasa <code>FantomaSclipitoare</code></p>
+          <button class="action-spooky-btn" onclick="triggerMonster('ghost')">Apelează .sperie()</button>
+          <div class="bubble-output" id="out-ghost">...așteaptă vraja...</div>
+        </div>
+        <div class="monster-card">
+          <div class="monster-avatar">🐱</div>
+          <h3>Pisoiul Umbră</h3>
+          <p style="font-size:.9rem;color:#cbd5e1">Clasa <code>PisicaMagica</code></p>
+          <button class="action-spooky-btn" onclick="triggerMonster('cat')">Apelează .sperie()</button>
+          <div class="bubble-output" id="out-cat">...așteaptă vraja...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-box purple">
+      <div class="step-header purple">✍️ Pasul 3: Completează spațiile libere!</div>
+      <p>Completează cuvintele cheie ca Pisica să moștenească <code>MonstruHalloween</code> și să-și suprascrie metoda. Atenție la indentare: metoda stă cu 4 spații în clasă, iar <code>print</code> cu 8.</p>
+
+<pre class="python-code fill-code no-lines">class PisicaMagica(<input type="text" class="blank-input" id="blank1" placeholder="clasa părinte" style="width:190px" autocomplete="off">):
+    <span class="kw">def</span> <input type="text" class="blank-input" id="blank2" placeholder="nume metodă" style="width:130px" autocomplete="off">(<span class="self-word">self</span>):
+        <span class="bi">print</span>(<span class="str">f"{</span><input type="text" class="blank-input" id="blank3" placeholder="cuvânt cheie" style="width:110px" autocomplete="off"><span class="str">.nume} toarce cu scântei violet: Miau-Boo! 🐾"</span>)</pre>
+
+      <div class="btn-row">
+        <button class="btn-spooky-check" onclick="checkBlanks()">✨ Verifică codul</button>
+        <button class="btn-hint" onclick="hintBlanks()">💡 Dă-mi un indiciu</button>
+      </div>
+      <div class="feedback-msg" id="fb-blanks"></div>
+    </div>
+  </section>
+
+  <!-- ===== CAPITOLUL 3 ===== -->
+  <section class="spooky-card chapter" id="cap3">
+    <span class="chapter-badge">Capitolul 3 • Cazanul cu Secrete</span>
+    <h2 class="card-title">🧪 Încapsulare și Punguța cu Bomboane</h2>
+    <p class="card-intro">
+      <strong>Încapsularea</strong> înseamnă că un obiect își ține datele în propriile „buzunare” (atribute) și își schimbă <strong>starea</strong>
+      prin metode bine stabilite, de exemplu adunând sau mâncând bomboane.
+    </p>
+
+    <div class="step-box purple">
+      <div class="step-header purple">👀 Pasul 1: Clasa vrăjitoarei cu pungă de bomboane</div>
+<pre class="python-code" data-code>
+class MicutaVrajitoare:
+    def __init__(self, nume):
+        self.nume = nume
+        self.bomboane = 0          # starea inițială
+        self.puncte_magie = 10
+
+    def colinda(self):
+        self.bomboane += 3         # schimbăm starea: +3 bomboane
+        print(f"🎃 Trick or Treat! {self.nume} a adunat bomboane!")
+
+    def arunca_vraja(self):
+        if self.puncte_magie >= 2:
+            self.puncte_magie -= 2     # consumăm magie
+            print("✨ Vraja roz a transformat o frunză în fluture!")
+        else:
+            print("😴 Ești prea obosită, ai nevoie de odihnă!")
+
+    def mananca_bomboana(self):
+        if self.bomboane > 0:
+            self.bomboane -= 1
+            self.puncte_magie = min(self.puncte_magie + 2, 10)
+</pre>
+    </div>
+
+    <div class="step-box orange">
+      <div class="step-header orange">🧙‍♀️ Simulator live: gestionează starea vrăjitoarei Angel!</div>
+      <p>Apasă butoanele ca să apelezi metodele și urmărește cum se schimbă atributele obiectului <code>angel</code>:</p>
+      <div class="witch-hud">
+        <div class="witch-avatar-col">
+          <div class="witch-avatar-big">🧙‍♀️</div>
+          <h3 style="color:var(--pink);margin-top:5px">Angel Vrăjitoarea</h3>
+          <pre class="python-code no-lines" id="state-code" style="text-align:left;font-size:.85rem;margin-top:12px"></pre>
+        </div>
+        <div class="witch-bars-col">
+          <div class="stat-row">
+            <div class="stat-label"><span>🍬 Bomboane în punguță:</span><span id="stat-candies-text" style="color:var(--orange)">0</span></div>
+            <div class="stat-track"><div class="stat-fill-candy" id="candy-bar" style="width:0%"></div></div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label"><span>🔮 Puncte de magie:</span><span id="stat-mana-text" style="color:var(--purple)">10 / 10</span></div>
+            <div class="stat-track"><div class="stat-fill-mana" id="mana-bar" style="width:100%"></div></div>
+          </div>
+          <div class="witch-actions">
+            <button class="action-spooky-btn" onclick="actionTrickOrTreat()">🍬 .colinda()</button>
+            <button class="action-spooky-btn" style="background:linear-gradient(135deg,#a855f7,#3b82f6)" onclick="actionCastSpell()">✨ .arunca_vraja()</button>
+            <button class="action-spooky-btn" style="background:#374151" onclick="actionEatCandy()">🍭 .mananca_bomboana()</button>
+          </div>
+          <div class="bubble-output" id="witch-log" style="margin-top:15px">Angel este gata de colindat prin noaptea de Halloween!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-box green">
+      <div class="step-header green">🎯 Pasul 2: Test de urmărire a stării</div>
+      <p>Angel are 0 bomboane, apelează <code>colinda()</code> de 4 ori, apoi mănâncă 2 bomboane. Câte bomboane rămân în <code>self.bomboane</code>?</p>
+      <div class="quiz-options" id="quiz-cap3">
+        <button class="quiz-btn" data-ok="0">A) 7 bomboane</button>
+        <button class="quiz-btn" data-ok="1">B) 10 bomboane (4 × 3 - 2)</button>
+        <button class="quiz-btn" data-ok="0">C) 12 bomboane</button>
+      </div>
+      <div class="feedback-msg" id="fb-quiz-cap3"></div>
+    </div>
+  </section>
+
+  <!-- ===== PAUZA ===== -->
+  <section class="spooky-card chapter" id="pauza">
+    <span class="chapter-badge">Pauză creativă • Brain Break</span>
+    <h2 class="card-title">🍭 Cazanul Fermecat cu Bomboane</h2>
+    <p class="card-intro">Ai învățat o mulțime! Fă o pauză de 3 minute: adună bomboane, cheamă pisicuțe negre și deblochează lilieci.</p>
+    <div class="clicker-box">
+      <div class="giant-cauldron" onclick="clickCauldron()">🍲</div>
+      <div class="score-candy"><span id="candy-score">0</span> 🍬</div>
+      <p style="color:#cbd5e1">Apasă pe cazan ca să prepari bomboane magice!</p>
+      <div class="store-grid">
+        <div class="store-item disabled" id="upg1" onclick="buyUpgrade(1)">
+          <div style="font-size:1.8rem">🦇</div><strong>Liliac Zburlit</strong>
+          <p style="font-size:.85rem;color:#a78bfa">+1 bomboană / secundă</p>
+          <div style="color:var(--yellow);font-weight:700;margin-top:5px" id="upg1-cost">Cost: 15 🍬</div>
+        </div>
+        <div class="store-item disabled" id="upg2" onclick="buyUpgrade(2)">
+          <div style="font-size:1.8rem">🐱</div><strong>Pisicuță Neagră</strong>
+          <p style="font-size:.85rem;color:#a78bfa">+5 bomboane / secundă</p>
+          <div style="color:var(--yellow);font-weight:700;margin-top:5px" id="upg2-cost">Cost: 60 🍬</div>
+        </div>
+        <div class="store-item disabled" id="upg3" onclick="buyUpgrade(3)">
+          <div style="font-size:1.8rem">🧙‍♀️</div><strong>Vraja lui Angel</strong>
+          <p style="font-size:.85rem;color:#a78bfa">+20 bomboane / secundă</p>
+          <div style="color:var(--yellow);font-weight:700;margin-top:5px" id="upg3-cost">Cost: 200 🍬</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CAPITOLUL 4: PUZZLE ===== -->
+  <section class="spooky-card chapter" id="cap4">
+    <span class="chapter-badge">Capitolul 4 • Laboratorul de Aranjat Vrăji</span>
+    <h2 class="card-title">🧩 Ordine și indentare: reconstruiește codul!</h2>
+    <p class="card-intro">
+      Furtuna a amestecat liniile din clasa <code>VampirPufos</code>! Fiecare linie are deja indentarea ei (1 nivel = 4 spații).
+      Folosește <strong>▲ ▼</strong> ca să le pui în ordinea corectă: clasa, apoi <code>__init__</code> cu <code>super()</code> și atributul, apoi <code>sperie</code>.
+    </p>
+    <div class="puzzle-legend"><span>▲▼ mută linia (indentarea rămâne la ea)</span></div>
+    <div class="reorder-list" id="puzzle-lines"></div>
+    <div class="btn-row">
+      <button class="btn-spooky-check" onclick="checkPuzzle()">🧪 Verifică rețeta de cod</button>
+      <button class="btn-hint" onclick="resetPuzzle()">🔄 Amestecă din nou</button>
+    </div>
+    <div class="feedback-msg" id="fb-puzzle"></div>
+  </section>
+
+  <!-- ===== CAPITOLUL 5: EDITOR ===== -->
+  <section class="spooky-card chapter" id="cap5">
+    <span class="chapter-badge">Capitolul 5 • Provocarea Practică</span>
+    <h2 class="card-title">💻 Atelierul de Vrăji Python</h2>
+    <p class="card-intro">
+      Scrie cod Python <strong>adevărat</strong> și rulează-l chiar aici. Editorul are numere de linie, <strong>Tab</strong> pune 4 spații
+      (<strong>Shift+Tab</strong> le scoate), <strong>Enter</strong> păstrează indentarea și adaugă un nivel după <code>:</code>,
+      iar <strong>Ctrl+Enter</strong> rulează codul. Prima rulare încarcă Python în browser (câteva secunde, e nevoie de internet).
+    </p>
+
+    <div class="ide-container">
+      <div class="ide-topbar">
+        <div class="ide-tabs">
+          <button class="tab-btn active" data-tpl="ex1">misiunea1_fantome.py</button>
+          <button class="tab-btn" data-tpl="ex2">misiunea2_inventar.py</button>
+          <button class="tab-btn" data-tpl="ex3">misiunea3_polimorfism.py</button>
+        </div>
+        <span style="font-size:.8rem;color:#94a3b8;padding-bottom:6px">Python 3 • Halloween Edition</span>
+      </div>
+      <div class="editor-wrap">
+        <pre id="gutter">1</pre>
+        <textarea id="python-editor" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off"></textarea>
+      </div>
+      <div class="ide-status"><span id="cursor-pos">Ln 1, Col 1</span><span>Indentare: 4 spații • UTF-8</span></div>
+      <div class="ide-controls">
+        <div style="font-size:.9rem;color:#cbd5e1">💡 <em>Rezolvă comentariile <code>TODO</code> din cod!</em></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-hint" id="btn-reset">↺ Resetează misiunea</button>
+          <button class="btn-hint" id="btn-copy">📋 Copiază pentru VS Code</button>
+          <button class="btn-run-code" id="btn-run">⚡ Rulează codul</button>
+        </div>
+      </div>
+      <div class="terminal-window" id="term-output">
+        <div class="term-line" style="color:#64748b"># Consola este pregătită. Apasă „Rulează codul” sau Ctrl+Enter.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DIPLOMA ===== -->
+  <section class="diploma-card chapter" id="diploma">
+    <div style="font-size:3.5rem;margin-bottom:5px">📜🎃✨</div>
+    <h2 class="diploma-title">Certificat de Mare Maestru Python de Halloween</h2>
+    <p style="font-size:1.12rem;color:#e9d5ff;max-width:650px;margin:0 auto">
+      Se acordă cu mare fast învățăcelului curajos care a stăpânit Moștenirea, Polimorfismul și Schimbarea Stării:
+    </p>
+    <input type="text" class="diploma-input-name" id="student-name" value="Numele Elevei">
+    <p style="color:#cbd5e1;margin-top:10px">🌟 A îmblânzit monștrii orientați pe obiecte, a scris clase fără erori de indentare și a deblocat toate secretele Conacului Bântuit!</p>
+    <div style="margin-top:25px;display:flex;justify-content:center;gap:15px;flex-wrap:wrap">
+      <button class="btn-spooky-check" onclick="celebrate()">🎉 Lansează vrăji sărbătorești!</button>
+      <button class="btn-hint" onclick="window.print()">🖨️ Tipărește certificatul</button>
+    </div>
+  </section>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* =========================================================
+   0. UTILITARE
+   ========================================================= */
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+let toastTimer;
+function toast(msg){
+  const t = $('toast'); t.innerHTML = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+/* =========================================================
+   1. EVIDENTIATOR DE SINTAXA PYTHON + INDENTARE CU GHIDAJE
+   ========================================================= */
+const TOKEN_RE = /(#.*$)|(f?"(?:[^"\\]|\\.)*"|f?'(?:[^'\\]|\\.)*')|\b(class|def)(\s+)([A-Za-z_]\w*)|\b(self)\b|\b(print|super|len|range|min|max)(?=\()|\b(return|if|else|elif|for|while|in|import|from|and|or|not|pass|True|False|None)\b|\b(\d+)\b|\b([A-Za-z_]\w*)(?=\()/g;
+
+function highlightText(text){
+  let out = '', last = 0, m;
+  TOKEN_RE.lastIndex = 0;
+  while ((m = TOKEN_RE.exec(text))){
+    out += esc(text.slice(last, m.index));
+    if (m[1]) out += `<span class="comment">${esc(m[1])}</span>`;
+    else if (m[2]) out += `<span class="str">${esc(m[2])}</span>`;
+    else if (m[3]) out += `<span class="kw">m[3]</span>{m[4]}<span class="func">${esc(m[5])}</span>`;
+    else if (m[6]) out += `<span class="self-word">self</span>`;
+    else if (m[7]) out += `<span class="bi">${m[7]}</span>`;
+    else if (m[8]) out += `<span class="kw">${m[8]}</span>`;
+    else if (m[9]) out += `<span class="num">${m[9]}</span>`;
+    else if (m[10]) out += `<span class="call">${esc(m[10])}</span>`;
+    last = TOKEN_RE.lastIndex;
+  }
+  return out + esc(text.slice(last));
+}
+
+/* O linie de cod: fiecare grup de 4 spatii de la inceput devine un ghidaj vizual. */
+function codeLineHtml(line){
+  const lead = line.match(/^ */)[0].length;
+  const levels = Math.floor(lead / 4);
+  const rest = lead % 4;
+  let html = '';
+  for (let i = 0; i < levels; i++) html += '<span class="guide">    </span>';
+  html += ' '.repeat(rest);
+  return html + highlightText(line.slice(lead));
+}
+
+function setCode(pre, text){
+  const lines = text.replace(/^\n+|\n+$/g, '').split('\n');
+  pre.innerHTML = lines.map(l =>
+    `<span class="line">${codeLineHtml(l).replace(/\?\?\?/g,'<span class="qmark">???</span>')}</span>`
+  ).join('');
+}
+
+document.querySelectorAll('pre[data-code]').forEach(pre => setCode(pre, pre.textContent));
+
+/* =========================================================
+   2. PROGRES
+   ========================================================= */
+const TASKS = ['c1','c2','blanks','c3','puzzle','code'];
+const doneTasks = new Set();
+function markDone(id){
+  if (doneTasks.has(id)) return;
+  doneTasks.add(id);
+  $('progress-fill').style.width = (doneTasks.size / TASKS.length * 100) + '%';
+  ('progress-text').textContent=`{doneTasks.size}/${TASKS.length} misiuni`;
+  const tabOf = {c1:'cap1',c2:'cap2',blanks:'cap2',c3:'cap3',puzzle:'cap4',code:'cap5'}[id];
+  const need = {cap1:['c1'],cap2:['c2','blanks'],cap3:['c3'],cap4:['puzzle'],cap5:['code']}[tabOf];
+  if (need.every(n => doneTasks.has(n))) document.querySelector(`#tabs .tab[data-ch="${tabOf}"]`).classList.add('done');
+  if (doneTasks.size === TASKS.length){
+    toast('🏆 Ai terminat toate misiunile! Ia-ți diploma din josul paginii!');
+    celebrate(true);
+  }
+}
+
+/* =========================================================
+   3. CANVAS: LILIECI, SCANTEI, FRUNZE
+   ========================================================= */
+const canvas = $('halloween-canvas'), ctx = canvas.getContext('2d');
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+class Particle{
+  constructor(){ this.reset(); }
+  reset(){
+    this.x = Math.random()*W; this.y = Math.random()*H;
+    this.size = Math.random()*4+2;
+    this.sx = (Math.random()-.5)*1.2; this.sy = Math.random()*.8+.3;
+    this.alpha = Math.random()*.6+.2;
+    const r = Math.random();
+    this.type = r > .85 ? 'bat' : (r > .45 ? 'sparkle' : 'leaf');
+    this.angle = Math.random()*Math.PI*2; this.rot = (Math.random()-.5)*.05;
+  }
+  update(){
+    this.x += this.sx; this.y += this.sy; this.angle += this.rot;
+    if (this.y > H+20 || this.x < -20 || this.x > W+20){ this.reset(); this.y = -10; }
+  }
+  draw(){
+    ctx.save(); ctx.translate(this.x,this.y); ctx.rotate(this.angle); ctx.globalAlpha = this.alpha;
+    if (this.type === 'bat'){
+      ctx.fillStyle = '#ff7518'; ctx.beginPath(); ctx.moveTo(0,0);
+      ctx.quadraticCurveTo(-6,-6,-12,-2); ctx.quadraticCurveTo(-8,6,0,4);
+      ctx.quadraticCurveTo(8,6,12,-2); ctx.quadraticCurveTo(6,-6,0,0); ctx.fill();
+    } else if (this.type === 'sparkle'){
+      ctx.fillStyle = '#c084fc'; ctx.beginPath(); ctx.arc(0,0,this.size,0,Math.PI*2); ctx.fill();
+    } else {
+      ctx.fillStyle = '#f97316'; ctx.beginPath(); ctx.ellipse(0,0,this.size*1.5,this.size,0,0,Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  }
+}
+const particles = Array.from({length:45}, () => new Particle());
+(function loop(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(loop);
+})();
+
+/* =========================================================
+   4. SUNETE (Web Audio)
+   ========================================================= */
+let audioCtx = null;
+function playSound(type){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const now = audioCtx.currentTime;
+    const tone = (freq, start, dur, wave, vol) => {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = wave; o.frequency.setValueAtTime(freq, now+start);
+      g.gain.setValueAtTime(vol, now+start); g.gain.exponentialRampToValueAtTime(0.001, now+start+dur);
+      o.connect(g); g.connect(audioCtx.destination); o.start(now+start); o.stop(now+start+dur);
+    };
+    if (type === 'pop') tone(620, 0, .08, 'sine', .2);
+    else if (type === 'success') [523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f,i*.08,.25,'triangle',.18));
+    else if (type === 'spooky'){ tone(220,0,.35,'sawtooth',.12); tone(150,.05,.3,'sawtooth',.08); }
+    else if (type === 'magic') [440,554,659,880,1108].forEach((f,i)=>tone(f,i*.06,.3,'sine',.12));
+  }catch(e){}
+}
+
+/* =========================================================
+   5. QUIZ-URI (un singur mecanism pentru toate)
+   ========================================================= */
+const QUIZ = {
+  'quiz-cap1': { task:'c1',
+    ok:'🎉 <strong>Excelent!</strong> Folosim <code>super().__init__(nume, culoare)</code> ca să rulăm constructorul clasei de bază.',
+    bad:'🎃 <em>Nu chiar!</em> Gândește-te la cuvântul cheie care cheamă clasa mamă: <code>super()</code>.' },
+  'quiz-cap2': { task:'c2',
+    ok:'✨ <strong>Exact!</strong> <code>DovleacVesel</code> a suprascris <code>sperie()</code>, deci se execută varianta lui, nu cea din părinte.',
+    bad:'🦇 <em>Mai încearcă!</em> Clasa copil are propria variantă de <code>sperie()</code>, care o înlocuiește pe cea din părinte.' },
+  'quiz-cap3': { task:'c3',
+    ok:'🎉 <strong>Corect!</strong> 4 × 3 = 12 bomboane, minus 2 mâncate → 10 rămase în <code>self.bomboane</code>.',
+    bad:'🎃 <em>Calculează cu atenție:</em> 4 apeluri <code>colinda()</code> dau 12 bomboane, minus 2 mâncate.' }
+};
+Object.keys(QUIZ).forEach(id => {
+  const box = $(id), cfg = QUIZ[id], fb = $('fb-' + id);
+  box.addEventListener('click', e => {
+    const btn = e.target.closest('.quiz-btn');
+    if (!btn || box.dataset.locked) return;
+    box.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('correct','wrong'));
+    const ok = btn.dataset.ok === '1';
+    btn.classList.add(ok ? 'correct' : 'wrong');
+    fb.className = 'feedback-msg show ' + (ok ? 'success' : 'error');
+    fb.innerHTML = ok ? cfg.ok : cfg.bad;
+    playSound(ok ? 'success' : 'spooky');
+    if (ok){ box.dataset.locked = '1'; markDone(cfg.task); }
+  });
+});
+
+/* =========================================================
+   6. TEATRUL POLIMORFISMULUI + SPATII LIBERE
+   ========================================================= */
+function triggerMonster(type){
+  const msgs = {
+    pumpkin:['out-pumpkin','🎃 "Dovi luminează ochii portocalii: Booo-ha-ha!"','magic'],
+    ghost:['out-ghost','👻 "Bibi trece prin ușă aruncând sclipici: Uuuuu roz!"','magic'],
+    cat:['out-cat','🐾 "Umbră toarce cu scântei violet: Miau-Boo!"','spooky']
+  };
+  const [id, text, snd] = msgs[type];
+  $(id).textContent = text; playSound('pop'); playSound(snd);
+}
+
+function checkBlanks(){
+  const val = id => $(id).value.trim();
+  const ok1 = val('blank1') === 'MonstruHalloween';
+  const ok2 = val('blank2') === 'sperie';
+  const ok3 = val('blank3') === 'self';
+  [['blank1',ok1],['blank2',ok2],['blank3',ok3]].forEach(([id,ok]) => $(id).className = 'blank-input ' + (ok ? 'valid' : 'invalid'));
+  const fb = $('fb-blanks');
+  if (ok1 && ok2 && ok3){
+    fb.className = 'feedback-msg show success';
+    fb.innerHTML = '🌟 <strong>Bravo, micuță vrăjitoare!</strong> Ai completat moștenirea și suprascrierea: <code>class PisicaMagica(MonstruHalloween):</code>, <code>def sperie(self):</code> și <code>self.nume</code>.';
+    playSound('success'); markDone('blanks');
+  } else {
+    fb.className = 'feedback-msg show error';
+    let tips = [];
+    if (!ok1) tips.push('clasa părinte este <code>MonstruHalloween</code> (atenție la majuscule)');
+    if (!ok2) tips.push('metoda suprascrisă se numește <code>sperie</code>');
+    if (!ok3) tips.push('rucsacul obiectului este <code>self</code>');
+    fb.innerHTML = '🎃 Aproape! Verifică: ' + tips.join('; ') + '.';
+    playSound('spooky');
+  }
+}
+function hintBlanks(){
+  $('blank1').placeholder = 'MonstruHalloween';
+  $('blank2').placeholder = 'sperie';
+  $('blank3').placeholder = 'self';
+  playSound('pop');
+}
+
+/* =========================================================
+   7. SIMULATOR DE STARE
+   ========================================================= */
+let witchCandies = 0, witchMana = 10;
+function updateWitchUI(msg){
+  $('stat-candies-text').textContent = witchCandies;
+  ('stat-mana-text').textContent=`{witchMana} / 10`;
+  $('candy-bar').style.width = Math.min(witchCandies/20*100,100) + '%';
+  $('mana-bar').style.width = (witchMana/10*100) + '%';
+  $('witch-log').textContent = msg;
+  setCode($('state-code'), `angel.bomboane = ${witchCandies}\nangel.puncte_magie = ${witchMana}`);
+}
+function actionTrickOrTreat(){
+  witchCandies += 3; playSound('pop');
+  updateWitchUI(`🎃 Trick or treat! Angel a primit 3 bomboane. Total: ${witchCandies}`);
+}
+function actionCastSpell(){
+  if (witchMana >= 2){
+    witchMana -= 2; playSound('magic');
+    updateWitchUI(`✨ Angel a agitat bagheta! O ploaie de stele roz a luminat curtea. Magie rămasă: ${witchMana}`);
+  } else {
+    playSound('spooky');
+    updateWitchUI('😴 Angel nu mai are magie! Are nevoie de o bomboană dulce.');
+  }
+}
+function actionEatCandy(){
+  if (witchCandies > 0){
+    witchCandies -= 1; witchMana = Math.min(witchMana+2, 10); playSound('pop');
+    updateWitchUI('🍭 Niam-niam! Angel a mâncat o bomboană și a recuperat 2 puncte de magie.');
+  } else {
+    playSound('spooky');
+    updateWitchUI('🍬 Punguța e goală! Apelează mai întâi .colinda()');
+  }
+}
+updateWitchUI('Angel este gata de colindat prin noaptea de Halloween!');
+
+/* =========================================================
+   8. CLICKER (BRAIN BREAK)
+   ========================================================= */
+let candies = 0, candyPerSec = 0;
+const upgPrices = [15, 60, 200], upgGain = [1, 5, 20];
+function clickCauldron(){ candies++; playSound('pop'); updateClickerUI(); }
+function buyUpgrade(i){
+  const cost = upgPrices[i-1];
+  if (candies >= cost){
+    candies -= cost; candyPerSec += upgGain[i-1]; playSound('success');
+    upgPrices[i-1] = Math.round(cost*1.4);
+    (`upg{i}-cost`).textContent = `Cost: ${upgPrices[i-1]} 🍬`;
+    updateClickerUI();
+  } else playSound('spooky');
+}
+function updateClickerUI(){
+  $('candy-score').textContent = candies;
+  [1,2,3].forEach(i => (`upg{i}`).classList.toggle('disabled', candies < upgPrices[i-1]));
+}
+setInterval(() => { if (candyPerSec > 0){ candies += candyPerSec; updateClickerUI(); } }, 1000);
+
+/* =========================================================
+   9. PUZZLE: ORDINE + INDENTARE
+   ========================================================= */
+const TARGET = [
+  { t:'class VampirPufos(MonstruHalloween):', lv:0 },
+  { t:'def __init__(self, nume, mantie):', lv:1 },
+  { t:'super().__init__(nume)', lv:2 },
+  { t:'self.mantie = mantie', lv:2 },
+  { t:'def sperie(self):', lv:1 },
+  { t:'print(f"{self.nume} își flutură mantia {self.mantie}: Ham-ha-ha!")', lv:2 }
+];
+const SHUFFLED = [4, 2, 0, 5, 3, 1];
+let puzzle = [];
+function resetPuzzle(){
+  puzzle = SHUFFLED.map(i => ({ t: TARGET[i].t, lv: TARGET[i].lv }));
+  $('fb-puzzle').className = 'feedback-msg';
+  renderPuzzle();
+}
+function renderPuzzle(marks){
+  const box = $('puzzle-lines'); box.innerHTML = '';
+  puzzle.forEach((row, i) => {
+    const card = document.createElement('div');
+    card.className = 'code-line-card' + (marks ? (marks[i] ? ' good' : ' bad') : '');
+    card.innerHTML = `
+      <span class="code-text">${codeLineHtml(' '.repeat(row.lv*4) + row.t)}</span>
+      <span class="order-btns">
+        <button class="arrow-btn" title="Mută sus" data-a="up" data-i="${i}">▲</button>
+        <button class="arrow-btn" title="Mută jos" data-a="down" data-i="${i}">▼</button>
+      </span>`;
+    box.appendChild(card);
+  });
+}
+$('puzzle-lines').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const i = +b.dataset.i, a = b.dataset.a;
+  const j = i + (a === 'up' ? -1 : 1);
+  if (j < 0 || j >= puzzle.length) return;
+  [puzzle[i], puzzle[j]] = [puzzle[j], puzzle[i]];
+  playSound('pop'); renderPuzzle();
+});
+function checkPuzzle(){
+  const marks = puzzle.map((r,i) => r.t === TARGET[i].t && r.lv === TARGET[i].lv);
+  const orderOk = puzzle.every((r,i) => r.t === TARGET[i].t);
+  const indentOk = puzzle.every((r,i) => r.lv === TARGET[i].lv);
+  const fb = $('fb-puzzle');
+  renderPuzzle(marks);
+  if (orderOk && indentOk){
+    fb.className = 'feedback-msg show success';
+    fb.innerHTML = '🎉 <strong>Extraordinar!</strong> Ordinea și indentarea sunt perfecte. Clasa <code>VampirPufos</code> ar rula fără nicio eroare.';
+    playSound('success'); markDone('puzzle');
+  } else {
+    fb.className = 'feedback-msg show error';
+    let msg = '🎃 Încă nu e gata. Liniile marcate cu roșu nu sunt la locul lor. ';
+    if (orderOk) msg += 'Ordinea e bună, dar indentarea nu: <code>class</code> la nivel 0, metodele (<code>def</code>) la nivel 1, corpul metodelor la nivel 2.';
+    else msg += 'Ordinea: clasa, apoi <code>__init__</code> cu <code>super()</code> și atributul propriu, apoi metoda <code>sperie</code>.';
+    fb.innerHTML = msg; playSound('spooky');
+  }
+}
+resetPuzzle();
+
+/* =========================================================
+   10. EDITOR PYTHON: NUMERE DE LINIE, TAB, ENTER, BACKSPACE
+   ========================================================= */
+const editor = $('python-editor'), gutter = $('gutter');
+const TEMPLATES = {
+ex1: `# MISIUNEA 1: Fantomița Muzicală 👻🎶
+class MonstruHalloween:
+    def __init__(self, nume):
+        self.nume = nume
+
+    def sperie(self):
+        print("Un sunet din conac...")
+
+
+class Fantomita(MonstruHalloween):
+    def __init__(self, nume, transparenta):
+        super().__init__(nume)
+        self.transparenta = transparenta
+
+    def sperie(self):
+        print(f"👻 {self.nume} ({self.transparenta}% transparentă) cântă la fluier: Fiuuu-fiuuu!")
+
+
+casper = Fantomita("Casper cel Roz", 70)
+casper.sperie()
+
+# TODO: creează clasa Dovleac(MonstruHalloween) cu propria metodă sperie()
+# TODO: creează un obiect Dovleac și apelează .sperie()
+`,
+ex2: `# MISIUNEA 2: Punguța de Bomboane a lui Stitch 🍬
+class VrajitorStitch:
+    def __init__(self, nume):
+        self.nume = nume
+        self.bomboane = 5
+
+    def adauga_bomboane(self, cantitate):
+        self.bomboane += cantitate
+        print(f"Stitch a adunat {cantitate} jeleuri! Total acum: {self.bomboane}")
+
+
+stitch = VrajitorStitch("Stitch Vrăjitorul")
+print("Bomboane inițiale:", stitch.bomboane)
+stitch.adauga_bomboane(4)
+
+# TODO: adaugă metoda mananca_bomboana(self) care scade 1 bomboană
+#       DOAR dacă self.bomboane este mai mare ca 0
+# TODO: apeleaz-o de 3 ori și afișează starea finală
+`,
+ex3: `# MISIUNEA 3: Parada Monștrilor (polimorfism) 🎭
+class MonstruHalloween:
+    def __init__(self, nume):
+        self.nume = nume
+
+    def sperie(self):
+        print(f"{self.nume}: un sunet misterios se aude în conac...")
+
+
+class DovleacVesel(MonstruHalloween):
+    def sperie(self):
+        print(f"{self.nume} luminează ochii portocalii: Booo-ha-ha! 🎃")
+
+
+class FantomaSclipitoare(MonstruHalloween):
+    def sperie(self):
+        print(f"{self.nume} trece prin ușă aruncând sclipici: Uuuuu roz! 👻✨")
+
+
+creaturi = [DovleacVesel("Dovi"), FantomaSclipitoare("Bibi"), MonstruHalloween("Necunoscutul")]
+
+for creatura in creaturi:
+    creatura.sperie()
+
+# TODO: adaugă clasa PisicaMagica și pune o pisică în lista creaturi
+`
+};
+let currentTpl = 'ex1';
+
+function updateGutter(){
+  const n = editor.value.split('\n').length;
+  let s = ''; for (let i = 1; i <= n; i++) s += i + '\n';
+  gutter.textContent = s.slice(0,-1);
+  gutter.scrollTop = editor.scrollTop;
+}
+function updateCursor(){
+  const before = editor.value.slice(0, editor.selectionStart).split('\n');
+  $('cursor-pos').textContent = `Ln ${before.length}, Col ${before[before.length-1].length + 1}`;
+}
+function loadTemplate(key){
+  currentTpl = key;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tpl === key));
+  editor.value = TEMPLATES[key]; updateGutter(); updateCursor();
+}
+document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => { loadTemplate(b.dataset.tpl); playSound('pop'); }));
+$('btn-reset').addEventListener('click', () => { loadTemplate(currentTpl); playSound('pop'); });
+
+function insertText(text){
+  editor.focus();
+  if (!document.execCommand('insertText', false, text)){
+    editor.setRangeText(text, editor.selectionStart, editor.selectionEnd, 'end');
+  }
+}
+function selectedLineRange(){
+  const v = editor.value;
+  const start = v.lastIndexOf('\n', editor.selectionStart - 1) + 1;
+  let end = v.indexOf('\n', editor.selectionEnd); if (end === -1) end = v.length;
+  return [start, end];
+}
+
+editor.addEventListener('keydown', e => {
+  const v = editor.value, s = editor.selectionStart, en = editor.selectionEnd;
+
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter'){ e.preventDefault(); runPython(); return; }
+
+  if (e.key === 'Tab'){
+    e.preventDefault();
+    const multi = v.slice(s, en).includes('\n');
+    if (!e.shiftKey && !multi){ insertText('    '); return; }
+    const [a, b] = selectedLineRange();
+    const block = v.slice(a, b).split('\n');
+    let delFirst = 0, delTotal = 0;
+    const out = block.map((line, idx) => {
+      if (!e.shiftKey) return '    ' + line;
+      const m = line.match(/^ {1,4}/); const d = m ? m[0].length : 0;
+      if (idx === 0) delFirst = d; delTotal += d;
+      return line.slice(d);
+    });
+    editor.setRangeText(out.join('\n'), a, b, 'preserve');
+    if (!e.shiftKey){
+      editor.selectionStart = s + 4; editor.selectionEnd = en + 4 * block.length;
+    } else {
+      editor.selectionStart = Math.max(a, s - delFirst); editor.selectionEnd = Math.max(editor.selectionStart, en - delTotal);
+    }
+    updateGutter(); updateCursor(); return;
+  }
+
+  if (e.key === 'Enter' && s === en){
+    const lineStart = v.lastIndexOf('\n', s - 1) + 1;
+    const currentLine = v.slice(lineStart, s);
+    const indent = currentLine.match(/^ */)[0];
+    const extra = currentLine.trimEnd().endsWith(':') ? '    ' : '';
+    if (indent || extra){ e.preventDefault(); insertText('\n' + indent + extra); }
+    return;
+  }
+
+  if (e.key === 'Backspace' && s === en && s > 0){
+    const lineStart = v.lastIndexOf('\n', s - 1) + 1;
+    const before = v.slice(lineStart, s);
+    if (before.length > 0 && /^ +$/.test(before)){
+      e.preventDefault();
+      const remove = before.length % 4 || 4;
+      editor.setRangeText('', s - remove, s, 'end');
+      updateGutter(); updateCursor();
+    }
+  }
+});
+editor.addEventListener('input', () => { updateGutter(); updateCursor(); });
+editor.addEventListener('scroll', () => { gutter.scrollTop = editor.scrollTop; });
+['keyup','click','focus'].forEach(ev => editor.addEventListener(ev, updateCursor));
+
+$('btn-copy').addEventListener('click', () => {
+  navigator.clipboard.writeText(editor.value).then(
+    () => { toast('✨ Cod copiat! Îl poți lipi în Visual Studio Code.'); playSound('magic'); },
+    () => toast('Nu am putut copia automat. Selectează codul și apasă Ctrl+C.')
+  );
+});
+
+/* ---------- Rulare Python reala, in browser (Pyodide) ---------- */
+let pyodidePromise = null;
+function loadPy(){
+  if (!pyodidePromise){
+    pyodidePromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';
+      s.onload = () => loadPyodide().then(resolve, reject);
+      s.onerror = () => reject(new Error('OFFLINE'));
+      document.head.appendChild(s);
+    }).catch(err => { pyodidePromise = null; throw err; });
+  }
+  return pyodidePromise;
+}
+
+const term = $('term-output');
+function termLine(text, cls){
+  const d = document.createElement('div');
+  d.className = 'term-line ' + cls; d.textContent = text; term.appendChild(d);
+  term.scrollTop = term.scrollHeight;
+}
+
+async function runPython(){
+  const btn = $('btn-run'); if (btn.disabled) return;
+  btn.disabled = true; playSound('magic');
+  term.innerHTML = '';
+  termLine('>>> Se pornește Python în conac... (prima dată durează câteva secunde)', 'term-hint');
+  try{
+    const py = await loadPy();
+    term.innerHTML = '';
+    termLine('>>> python misiune.py', 'term-hint');
+    py.setStdout({ batched: m => termLine(m, 'term-out') });
+    py.setStderr({ batched: m => termLine(m, 'term-err') });
+    const ns = py.globals.get('dict')();
+    try{ await py.runPythonAsync(editor.value, { globals: ns }); } finally { ns.destroy(); }
+    termLine('✨ [Execuție terminată fără erori]', 'term-success');
+    markDone('code');
+  }catch(err){
+    if (err && err.message === 'OFFLINE'){
+      termLine('Nu am putut încărca Python. Verifică conexiunea la internet sau folosește „Copiază pentru VS Code”.', 'term-err');
+    } else {
+      const msg = String(err && err.message || err).trim().split('\n');
+      msg.slice(-5).forEach(l => termLine(l, 'term-err'));
+      const all = msg.join('\n');
+      if (/IndentationError/.test(all)) termLine('💡 Verifică indentarea: fiecare nivel are exact 4 spații, iar după „:” urmează un bloc indentat.', 'term-hint');
+      else if (/NameError/.test(all)) termLine('💡 Un nume nu există: verifică ortografia sau dacă ai definit clasa/variabila înainte să o folosești.', 'term-hint');
+      else if (/SyntaxError/.test(all)) termLine('💡 Eroare de sintaxă: verifică parantezele, ghilimelele și „:” de la finalul liniilor def/class/if.', 'term-hint');
+      else if (/AttributeError/.test(all)) termLine('💡 Obiectul nu are acel atribut sau acea metodă: verifică numele și <self>.', 'term-hint');
+    }
+  }finally{
+    btn.disabled = false;
+  }
+}
+$('btn-run').addEventListener('click', runPython);
+loadTemplate('ex1');
+
+/* =========================================================
+   10b. CAPITOLE CA TAB-URI (un capitol pe ecran, meniul sus)
+   ========================================================= */
+const CHAPTERS = ['intro','cap1','cap2','cap3','pauza','cap4','cap5','diploma'];
+const CH_NAMES = {intro:'Hartă',cap1:'Moștenire',cap2:'Polimorfism',cap3:'Încapsulare',pauza:'Pauză',cap4:'Puzzle',cap5:'Atelier',diploma:'Diplomă'};
+let currentCh = 'intro';
+function showChapter(id, scroll){
+  if (!CHAPTERS.includes(id)) id = 'intro';
+  currentCh = id;
+  document.body.classList.toggle('at-intro', id === 'intro');
+  CHAPTERS.forEach(c => $(c).classList.toggle('active', c === id));
+  document.querySelectorAll('.chapter-pager').forEach(b => b.classList.toggle('show', b.dataset.for === id));
+  document.querySelectorAll('#tabs .tab').forEach(t => {
+    const on = t.dataset.ch === id;
+    t.classList.toggle('active', on);
+    if (on) t.scrollIntoView({block:'nearest', inline:'center'});
+  });
+  try{ history.replaceState(null, '', '#' + id); }catch(e){}
+  if (scroll !== false) window.scrollTo({top:0, behavior:'smooth'});
+}
+document.querySelectorAll('#tabs .tab').forEach(t => t.addEventListener('click', () => { showChapter(t.dataset.ch); playSound('pop'); }));
+CHAPTERS.forEach((id, i) => {
+  const prev = CHAPTERS[i-1], next = CHAPTERS[i+1];
+  if (!prev && !next) return;
+  const bar = document.createElement('div'); bar.className = 'pager chapter-pager';
+  bar.dataset.for = id;
+  bar.innerHTML =
+    (prev ? `<button class="btn-hint" data-go="${prev}">← ${CH_NAMES[prev]}</button>` : '<span></span>') +
+    (next ? `<button class="btn-spooky-check" data-go="next">{CH_NAMES[next]} →</button>` : '<span></span>');
+  $(id).after(bar);
+  bar.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b){ showChapter(b.dataset.go); playSound('pop'); } });
+});
+addEventListener('hashchange', () => showChapter(location.hash.slice(1)));
+showChapter(location.hash.slice(1) || 'intro', false);
+
+/* =========================================================
+   11. DIPLOMA
+   ========================================================= */
+function celebrate(silent){
+  playSound('success');
+  for (let i = 0; i < 40 && particles.length < 140; i++) setTimeout(() => particles.push(new Particle()), i*25);
+  if (!silent) toast('🎃 Felicitări! Ești o adevărată maestră a programării orientate pe obiecte!');
+}
+</script>
+</body>
+</html>
+
+
